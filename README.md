@@ -6,7 +6,8 @@
 
 ## 📌 Description  
 This project implements an **offline** phishing website detection model, capable of operating without an internet connection by leveraging the knowledge acquired during its training phase.  
-The architecture combines **Convolutional Neural Networks (CNN)** and **Recurrent Neural Networks (LSTM)** to capture both spatial and sequential patterns in URL features.  
+
+The architecture combines Convolutional Neural Networks (CNN) and Long Short-Term Memory (LSTM) networks, leveraging the strengths of both paradigms. CNN layers act as feature extractors, scanning URL components to detect local spatial patterns such as character groupings, token distributions, and structural anomalies. In parallel, the LSTM layer captures sequential dependencies across the URL string, retaining contextual information about recurring patterns that may indicate phishing behavior. This hybrid design allows the model to simultaneously identify fine-grained lexical cues and long-range dependencies, resulting in a more robust and accurate classification of web addresses.  
 
 The system analyzes multiple lexical, structural, and heuristic attributes of web addresses, classifying them as **legitimate** or **potentially malicious (phishing)** with high accuracy.
 
