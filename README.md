@@ -103,6 +103,7 @@ python URL_Phishing_Detection.ipynb
 - For greater accuracy, it is recommended to supplement its use with other security tools.  
 
 ---
+
 ## 🖼️ Screenshots
 
 🔎 URL Analysis Input Interface
@@ -116,3 +117,9 @@ python URL_Phishing_Detection.ipynb
 
 ## ✅ Example of URL Classification Result
 ![Global Dashboard](docs/images/Screenshot_3.jpg)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
