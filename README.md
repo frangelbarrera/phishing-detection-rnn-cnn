@@ -109,13 +109,13 @@ python URL_Phishing_Detection.ipynb
 🔎 URL Analysis Input Interface
 ![Global Dashboard](docs/images/Screenshot_4.jpg)
 
-## ✅ Example of URL Classification Result
+##  Example of URL Classification Result
 ![Global Dashboard](docs/images/Screenshot_1.jpg)
 
-## ✅ Example of URL Classification Result
+##  Example of URL Classification Result
 ![Global Dashboard](docs/images/Screenshot_2.jpg)
 
-## ✅ Example of URL Classification Result
+##  Example of URL Classification Result
 ![Global Dashboard](docs/images/Screenshot_3.jpg)
 
 ---
