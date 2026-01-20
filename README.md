@@ -4,7 +4,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/main/URL_Phishing_Detection.ipynb)
 
 
-## 📌 Description  
+##  Description  
 This project implements an **offline** phishing website detection model, capable of operating without an internet connection by leveraging the knowledge acquired during its training phase.  
 
 The architecture combines Convolutional Neural Networks (CNN) and Long Short-Term Memory (LSTM) networks, leveraging the strengths of both paradigms. CNN layers act as feature extractors, scanning URL components to detect local spatial patterns such as character groupings, token distributions, and structural anomalies. In parallel, the LSTM layer captures sequential dependencies across the URL string, retaining contextual information about recurring patterns that may indicate phishing behavior. This hybrid design allows the model to simultaneously identify fine-grained lexical cues and long-range dependencies, resulting in a more robust and accurate classification of web addresses.  
@@ -13,7 +13,7 @@ The system analyzes multiple lexical, structural, and heuristic attributes of we
 
 ---
 
-## 🚀 Key Features  
+##  Key Features  
 - **Hybrid CNN + LSTM architecture** for superior detection performance  
 - **Offline execution**: no internet connection required for URL analysis  
 - **Advanced feature extraction**: length, subdomains, special characters, suspicious patterns, and more  
@@ -23,14 +23,14 @@ The system analyzes multiple lexical, structural, and heuristic attributes of we
 
 ---
 
-## 📊 Model Results  
+##  Model Results  
 - **Training accuracy**: ~97.7%  
 - **Test accuracy**: ~88.9%  
 - **AUC (Area Under ROC Curve)**: 0.89  
 
 ---
 
-## 📂 Repository Structure  
+##  Repository Structure  
 ```
 /phishing-detection-rnn-cnn
 │
@@ -45,7 +45,7 @@ The system analyzes multiple lexical, structural, and heuristic attributes of we
 
 ---
 
-## ☁️ Running the Project with Google Drive and Colab  
+##  Running the Project with Google Drive and Colab  
 To run this project seamlessly in **Google Colab** while keeping all files organized and persistent:  
 
 1. In your Google Drive, **create a new folder** named:  
@@ -68,7 +68,7 @@ This setup keeps your workspace clean, ensures file persistence, and allows you 
 
 ---
 
-## ⚙️ Requirements  
+##  Requirements  
 - Python 3.10+  
 - TensorFlow  
 - Pandas, NumPy, Matplotlib, Seaborn  
@@ -81,7 +81,7 @@ pip install tensorflow pandas numpy matplotlib seaborn scikit-learn
 
 ---
 
-## 📥 Usage  
+##  Usage  
 1. Clone the repository:  
 ```bash
 git clone https://github.com/frangelbarrera/phishing-detection-rnn-cnn.git
@@ -98,13 +98,13 @@ python URL_Phishing_Detection.ipynb
 
 ---
 
-## ⚠️ Notes and Warnings  
+##  Notes and Warnings  
 - The model may **misclassify** some well-known legitimate sites due to limitations in the current implementation.  
 - For greater accuracy, it is recommended to supplement its use with other security tools.  
 
 ---
 
-## 🖼️ Screenshots
+##  Screenshots
 
 🔎 URL Analysis Input Interface
 ![Global Dashboard](docs/images/Screenshot_4.jpg)
@@ -120,6 +120,6 @@ python URL_Phishing_Detection.ipynb
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
