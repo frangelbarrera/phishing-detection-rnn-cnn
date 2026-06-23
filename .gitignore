@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large data files (regenerate from notebook)
+# Uncomment if you want to use Git LFS instead:
+# X_train.npy
+# X_test.npy
+# Y_train.npy
+# Y_train.npy
+# history.npy
+# my_model.keras
+
+# Data (regenerate from CSV + notebook)
+dataset_phishing.csv
+
+# PDFs (screenshots are in docs/images/)
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
