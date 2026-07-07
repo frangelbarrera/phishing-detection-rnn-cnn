@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phishing URL Detection</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --surface: #fbf8f2;
+      --surface-2: #efe9dd;
+      --ink: #2f3a33;
+      --ink-soft: #5a6358;
+      --line: #d8d0c0;
+      --accent: #8a9a8b;
+      --accent-deep: #5d7160;
+      --warn: #b06b5f;
+      --safe: #6b8a6f;
+      --shadow: 0 1px 2px rgba(47, 58, 51, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua',
+                   Palatino, Georgia, serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 56px auto 80px;
+      padding: 0 24px;
+    }
+
+    header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      color: var(--ink-soft);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    form {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #fff;
+      color: var(--ink);
+      font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      padding: 11px 22px;
+      border: 1px solid var(--accent-deep);
+      border-radius: 3px;
+      background: var(--accent);
+      color: #fbf8f2;
+      font-family: inherit;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    button:hover { background: var(--accent-deep); }
+    button:disabled {
+      background: var(--surface-2);
+      color: var(--ink-soft);
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .result {
+      margin-top: 28px;
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+    .result.visible { display: block; }
+    .result.phishing { border-left: 3px solid var(--warn); }
+    .result.legitimate { border-left: 3px solid var(--safe); }
+
+    .result-label {
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 4px;
+    }
+    .result-url {
+      font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+      font-size: 14px;
+      color: var(--ink);
+      word-break: break-all;
+      margin-bottom: 14px;
+    }
+    .result-verdict {
+      font-size: 22px;
+      margin: 0 0 14px;
+      font-weight: 500;
+    }
+    .verdict-phishing { color: var(--warn); }
+    .verdict-legitimate { color: var(--safe); }
+
+    .meter {
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 8px 0 6px;
+    }
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--safe), var(--warn));
+      transition: width 0.3s ease;
+    }
+    .meter-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .error {
+      margin-top: 18px;
+      padding: 12px 16px;
+      background: #f7e8e4;
+      border: 1px solid #d6b0a8;
+      border-radius: 3px;
+      color: #7c3b30;
+      font-size: 14px;
+      display: none;
+    }
+    .error.visible { display: block; }
+
+    .meta {
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .meta dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      column-gap: 14px;
+      row-gap: 4px;
+      margin: 0;
+    }
+    .meta dt {
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      font-size: 11px;
+      color: var(--ink-soft);
+      padding-top: 2px;
+    }
+    .meta dd { margin: 0; color: var(--ink); }
+
+    footer {
+      margin-top: 60px;
+      font-size: 12px;
+      color: var(--ink-soft);
+      text-align: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 520px) {
+      .input-row { flex-direction: column; }
+      button { width: 100%; }
+      .wrap { margin: 24px auto 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Phishing URL Detection</h1>
+      <p class="subtitle">A small offline classifier trained on lexical and structural URL features.</p>
+    </header>
+
+    <form id="predict-form" autocomplete="off">
+      <label for="url-input">URL to analyze</label>
+      <div class="input-row">
+        <input type="text" id="url-input" name="url"
+               placeholder="https://example.com/path" spellcheck="false"
+               aria-label="URL to analyze">
+        <button type="submit" id="submit-btn">Analyze</button>
+      </div>
+      <p class="hint">All analysis happens locally. No URL is ever sent over the network.</p>
+    </form>
+
+    <div id="error-box" class="error" role="alert"></div>
+
+    <div id="result" class="result" role="status" aria-live="polite">
+      <div class="result-label">Result</div>
+      <div class="result-url" id="result-url"></div>
+      <p class="result-verdict" id="result-verdict"></p>
+      <div class="meter">
+        <div class="meter-fill" id="meter-fill" style="width:0%"></div>
+      </div>
+      <div class="meter-row">
+        <span>legitimate</span>
+        <span id="result-prob"></span>
+        <span>phishing</span>
+      </div>
+    </div>
+
+    {% if metrics %}
+    <section class="meta">
+      <dl>
+        <dt>Accuracy</dt>
+        <dd>{{ '%.2f'|format(metrics.accuracy * 100) }}% on held-out test set</dd>
+        <dt>AUC-ROC</dt>
+        <dd>{{ '%.3f'|format(metrics.auc_roc) }}</dd>
+        <dt>Threshold</dt>
+        <dd>{{ '%.3f'|format(metrics.threshold) }} (probability above which a URL is flagged)</dd>
+        <dt>F1</dt>
+        <dd>{{ '%.3f'|format(metrics.f1) }}</dd>
+        <dt>Brier score</dt>
+        <dd>{{ '%.3f'|format(metrics.brier_score) }} (lower is better calibrated)</dd>
+      </dl>
+    </section>
+    {% endif %}
+
+    <footer>
+      Phishing Detection Model &middot; offline inference only
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById('predict-form');
+      const input = document.getElementById('url-input');
+      const btn = document.getElementById('submit-btn');
+      const resultBox = document.getElementById('result');
+      const resultUrl = document.getElementById('result-url');
+      const verdict = document.getElementById('result-verdict');
+      const meterFill = document.getElementById('meter-fill');
+      const probText = document.getElementById('result-prob');
+      const errorBox = document.getElementById('error-box');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const url = input.value.trim();
+        if (!url) return;
+        errorBox.classList.remove('visible');
+        resultBox.classList.remove('visible');
+        btn.disabled = true;
+        btn.textContent = 'Analyzing...';
+        try {
+          const resp = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: url })
+          });
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.error || 'Server error');
+          }
+          const data = await resp.json();
+          resultUrl.textContent = data.url;
+          const isPhish = data.is_phishing;
+          verdict.textContent = isPhish ? 'Likely phishing' : 'Likely legitimate';
+          verdict.className = 'result-verdict ' +
+            (isPhish ? 'verdict-phishing' : 'verdict-legitimate');
+          resultBox.className = 'result visible ' +
+            (isPhish ? 'phishing' : 'legitimate');
+          meterFill.style.width = (data.probability * 100).toFixed(1) + '%';
+          probText.textContent = 'p = ' + data.probability.toFixed(3);
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.classList.add('visible');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Analyze';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
