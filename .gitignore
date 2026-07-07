@@ -4,24 +4,10 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+env/
 
 # Jupyter
 .ipynb_checkpoints/
-
-# Large data files (regenerate from notebook)
-# Uncomment if you want to use Git LFS instead:
-# X_train.npy
-# X_test.npy
-# Y_train.npy
-# Y_train.npy
-# history.npy
-# my_model.keras
-
-# Data (regenerate from CSV + notebook)
-dataset_phishing.csv
-
-# PDFs (screenshots are in docs/images/)
-*.pdf
 
 # IDE
 .vscode/
@@ -30,3 +16,13 @@ dataset_phishing.csv
 # OS
 .DS_Store
 Thumbs.db
+
+# PDFs
+*.pdf
+
+# Local-only artifacts (do not commit; regenerate via train.py)
+# - dataset_phishing.csv is committed by intention (small enough, reproducibility)
+# - trained artifacts (my_model.keras, scaler.pkl, etc.) ARE committed as the
+#   canonical inference artifacts. If you retrain locally, you may keep or
+#   overwrite them; just verify metrics.json matches before pushing.
+*.npy
