@@ -1,0 +1,80 @@
+{
+  "trained_at_utc": "2026-07-07 20:07:28 UTC",
+  "python_version": "3.12.13",
+  "tensorflow_version": "2.21.0",
+  "numpy_version": "2.1.3",
+  "seed": 42,
+  "model_architecture": {
+    "type": "MLP",
+    "total_trainable_params": 5313,
+    "layers": [
+      {
+        "type": "Input",
+        "shape": [
+          49
+        ]
+      },
+      {
+        "type": "Dense",
+        "units": 64,
+        "activation": "relu",
+        "l2": 0.0001
+      },
+      {
+        "type": "Dropout",
+        "rate": 0.3
+      },
+      {
+        "type": "Dense",
+        "units": 32,
+        "activation": "relu",
+        "l2": 0.0001
+      },
+      {
+        "type": "Dropout",
+        "rate": 0.3
+      },
+      {
+        "type": "Dense",
+        "units": 1,
+        "activation": "sigmoid"
+      }
+    ],
+    "loss": "binary_crossentropy",
+    "optimizer": "Adam",
+    "initial_learning_rate": 0.001
+  },
+  "feature_count": 49,
+  "dataset_rows": 11430,
+  "split": {
+    "test_size": 0.2,
+    "stratify": true,
+    "random_state": 42
+  },
+  "training": {
+    "epochs_max": 200,
+    "batch_size": 64,
+    "validation_split": 0.15,
+    "early_stopping_patience": 15,
+    "reduce_lr_on_plateau": true,
+    "epochs_run": 103
+  },
+  "test_metrics": {
+    "accuracy": 0.8993875765529309,
+    "auc_roc": 0.9647697690457109,
+    "average_precision": 0.9652818378257231,
+    "brier_score": 0.07247954206263471,
+    "f1": 0.8997384481255449,
+    "threshold": 0.49942758679389954,
+    "confusion_matrix": [
+      [
+        1024,
+        119
+      ],
+      [
+        111,
+        1032
+      ]
+    ]
+  }
+}
