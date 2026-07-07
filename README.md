@@ -79,11 +79,37 @@ pip install -r requirements.txt
 # Classify a URL from the command line
 python predict.py "https://www.google.com"
 python predict.py "http://secure-account-verify-login.tk/login.html"
+```
 
-# Or serve the web UI
+For the interactive web UI, see the [Web UI](#web-ui) section below.
+
+## Web UI
+
+A minimal Flask app in `web/` lets you paste a URL and see the
+model's verdict in a clean, pastel-themed page. Start it with:
+
+```bash
 python -m web.app --host 0.0.0.0 --port 5000
 # Then open http://localhost:5000 in a browser
 ```
+
+The form renders the model's headline metrics underneath the input,
+and the result panel shows the predicted label, the phishing
+probability, and a graduated meter from "legitimate" to "phishing".
+
+**Empty state** — input form and model metrics:
+
+![Web UI empty state](docs/images/ui_landing.png)
+
+**Legitimate URL** — `https://www.google.com` classified as legitimate
+with probability 0.006:
+
+![Web UI classifying a legitimate URL](docs/images/ui_legitimate.png)
+
+**Phishing URL** — a suspicious URL classified as phishing with
+probability 1.000:
+
+![Web UI classifying a phishing URL](docs/images/ui_phishing.png)
 
 ## Retraining
 
