@@ -1,7 +1,7 @@
 ---
 
 # Offline Phishing Detection Model for Websites Using Recurrent and Convolutional Neural Networks
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/main/URL_Phishing_Detection.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/thesis-original/URL_Phishing_Detection.ipynb)
 
 
 ##  Description  
@@ -19,14 +19,32 @@ The system analyzes multiple lexical, structural, and heuristic attributes of we
 - **Advanced feature extraction**: length, subdomains, special characters, suspicious patterns, and more  
 - **Interactive analysis interface** for user-provided URLs  
 - **Warning messages and recommendations** to enhance user security  
-- **Modular, well-documented code** for easy adaptation and integration into other systems  
+- **Feature standardization** with a persisted `StandardScaler` so inference reproduces training preprocessing
+- **Early stopping and learning-rate scheduling** to avoid overfitting
 
 ---
 
 ##  Model Results  
-- **Training accuracy**: ~97.7%  
-- **Test accuracy**: ~88.9%  
-- **AUC (Area Under ROC Curve)**: 0.89  
+| Metric | Value |
+| --- | --- |
+| Test accuracy | **88.67 %** |
+| AUC-ROC | **0.946** |
+| Average precision | 0.949 |
+| F1 (at tuned threshold) | 0.883 |
+| Brier score | 0.087 |
+| Decision threshold | 0.504 |
+
+Confusion matrix on the held-out 20 % test split (rows = true, cols = predicted):
+
+```
+              legit   phishing
+legit          1046       97
+phishing        162      981
+```
+
+All metrics are computed on predicted probabilities (not argmax) and are
+fully reproducible from `train.py` with seed `42`. See `training_metadata.json`
+for the full training configuration and `metrics.json` for the ROC / PR curves.
 
 ---
 
@@ -34,13 +52,42 @@ The system analyzes multiple lexical, structural, and heuristic attributes of we
 ```
 /phishing-detection-rnn-cnn
 │
-├── dataset_phishing.csv         # Dataset used for training
+├── dataset_phishing.csv         # Dataset used for training (11,430 rows)
 ├── URL_Phishing_Detection.ipynb # Main notebook with the complete workflow
-├── my_model.keras                # Trained model ready for offline use
-├── X_train.npy / X_test.npy      # Preprocessed datasets
+├── train.py                     # Reproducible training script
+├── my_model.keras               # Trained CNN+LSTM model
+├── scaler.pkl                   # Fitted StandardScaler
+├── feature_columns.txt          # Canonical 55-feature order
+├── metrics.json                 # Full evaluation report (ROC, PR, etc.)
+├── history.json                 # Training history
+├── training_metadata.json       # Versions, seed, architecture, metrics digest
+├── SHA256SUMS                   # Integrity checksums for all artifacts
+├── X_train.npy / X_test.npy     # Preprocessed datasets (legacy, superseded by train.py)
 ├── Y_train.npy / Y_test.npy
-├── history.npy                   # Training history
 └── README.md
+```
+
+---
+
+##  Branches
+
+This repository contains two branches:
+
+- **`thesis-original`** (this branch) — The original CNN+LSTM hybrid architecture
+  from the academic thesis defended in July 2025, with reproducibility fixes
+  applied post-hoc (corrected input shape, softmax output head, feature
+  standardization, early stopping, AUC computed on probabilities). The
+  architecture is preserved exactly as defended: Conv1D(64) → MaxPool →
+  LSTM(100) → Flatten → Dense(64) → Dense(512) → Dense(64) → Dense(2).
+
+- **`main`** — A post-thesis engineering evolution (July 2026) that replaces
+  the CNN+LSTM with a simpler two-hidden-layer MLP trained on the same 55
+  features. Includes a Flask web UI, CLI, and reproducible artifacts.
+
+To switch between branches:
+```bash
+git checkout main              # post-thesis MLP evolution
+git checkout thesis-original   # defended CNN+LSTM thesis (this branch)
 ```
 
 ---
@@ -52,71 +99,64 @@ To run this project seamlessly in **Google Colab** while keeping all files organ
    ```
    phishing-detection-rnn-cnn
    ```
-2. Upload **all project files** into this folder (`.ipynb`, `.npy`, `.csv`, `.keras`, etc.).  
-3. In Colab, mount your Google Drive:  
-   ```python
-   from google.colab import drive
-   drive.mount('/content/drive')
-   ```
-4. Navigate to the project folder in Drive:  
-   ```python
-   %cd /content/drive/MyDrive/phishing-detection-rnn-cnn
-   ```
-5. Run the notebook `URL_Phishing_Detection.ipynb` — it will directly access the files from your Drive folder, ensuring smooth execution without manual file uploads each time.
+2. Upload **all project files** into this folder (`.ipynb`, `.csv`, `.keras`, `scaler.pkl`, etc.).  
+3. Open `URL_Phishing_Detection.ipynb` in Colab — the notebook auto-detects
+   Colab and mounts Drive. Run all cells top to bottom.
+4. After training, the new `my_model.keras`, `scaler.pkl`, `metrics.json`,
+   `history.json`, `training_metadata.json`, and `SHA256SUMS` will be
+   written to the project folder.
 
-This setup keeps your workspace clean, ensures file persistence, and allows you to resume work instantly from any device.
+To retrain locally instead:
+```bash
+python train.py
+```
 
 ---
 
 ##  Requirements  
 - Python 3.10+  
-- TensorFlow  
+- TensorFlow ≥ 2.15
 - Pandas, NumPy, Matplotlib, Seaborn  
-- scikit-learn  
+- scikit-learn ≥ 1.3
 
 Quick installation:  
 ```bash
-pip install tensorflow pandas numpy matplotlib seaborn scikit-learn
+pip install -r requirements.txt
 ```
 
 ---
 
 ##  Usage  
-1. Clone the repository:  
+1. Clone the repository and check out the thesis branch:  
 ```bash
 git clone https://github.com/frangelbarrera/phishing-detection-rnn-cnn.git
+cd phishing-detection-rnn-cnn
+git checkout thesis-original
 ```
-2. Load the trained model:  
+2. Load the trained model and scaler:  
 ```python
-from tensorflow import keras
-model = keras.models.load_model("my_model.keras")
+import pickle
+import tensorflow as tf
+model = tf.keras.models.load_model("my_model.keras")
+scaler = pickle.load(open("scaler.pkl", "rb"))
 ```
-3. Run the interactive analysis:  
-```python
-python URL_Phishing_Detection.ipynb
+3. Run the interactive analysis from the notebook, or retrain from scratch:
+```bash
+python train.py
 ```
 
 ---
 
 ##  Notes and Warnings  
-- The model may **misclassify** some well-known legitimate sites due to limitations in the current implementation.  
-- For greater accuracy, it is recommended to supplement its use with other security tools.  
-
----
-
-##  Screenshots
-
-🔎 URL Analysis Input Interface
-![Global Dashboard](docs/images/Screenshot_4.jpg)
-
-##  Example of URL Classification Result
-![Global Dashboard](docs/images/Screenshot_1.jpg)
-
-##  Example of URL Classification Result
-![Global Dashboard](docs/images/Screenshot_2.jpg)
-
-##  Example of URL Classification Result
-![Global Dashboard](docs/images/Screenshot_3.jpg)
+- Features are purely lexical/structural. The model does **not** inspect
+  SSL certificates, DNS records, or page content, so it cannot detect
+  phishing pages hosted on otherwise-legitimate domains.
+- Five features from the original dataset (`random_domain`,
+  `domain_in_brand`, `brand_in_subdomain`, `brand_in_path`,
+  `nb_external_redirection`) require curated brand lists or live network
+  access and are hardcoded to 0 in `extract_features` for offline use.
+- For greater accuracy, it is recommended to supplement its use with other
+  security tools.
 
 ---
 
