@@ -1,6 +1,7 @@
-tensorflow>=2.15.0
+tensorflow-cpu>=2.15.0
 pandas>=2.0.0
 numpy>=1.24.0
 matplotlib>=3.7.0
 scikit-learn>=1.3.0
 flask>=3.0.0
+gunicorn>=21.0.0
