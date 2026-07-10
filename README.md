@@ -112,7 +112,7 @@ A minimal Flask app in `web/` lets you paste a URL and see the
 model's verdict in a clean, pastel-themed page. Start it with:
 
 ```bash
-python -m web.app --host 0.0.0.0 --port 5000
+python -m web.app --host 127.0.0.1 --port 5000
 # Then open http://localhost:5000 in a browser
 ```
 

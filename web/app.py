@@ -1,13 +1,12 @@
 """Minimal Flask web UI for classifying URLs with the trained model.
 
 Run:
-    python -m web.app --host 0.0.0.0 --port 5000
+    python -m web.app --host 127.0.0.1 --port 5000
 """
 
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import os
 from pathlib import Path
@@ -21,6 +20,8 @@ import sys  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from phishing_detector import PhishingDetector  # noqa: E402
+
+MAX_URL_LENGTH = 2048
 
 app = Flask(__name__, template_folder=str(Path(__file__).parent / "templates"))
 _detector: PhishingDetector | None = None
@@ -41,9 +42,14 @@ def index():
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
     data = request.get_json(silent=True) or {}
-    url = (data.get("url") or "").strip()
+    raw = data.get("url")
+    if not isinstance(raw, str):
+        return jsonify({"error": "'url' must be a string"}), 400
+    url = raw.strip()
     if not url:
         return jsonify({"error": "Missing 'url' field"}), 400
+    if len(url) > MAX_URL_LENGTH:
+        return jsonify({"error": f"URL exceeds maximum length of {MAX_URL_LENGTH} characters"}), 400
     try:
         result = get_detector().predict(url)
         return jsonify(result.as_dict())
@@ -59,7 +65,7 @@ def api_health():
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5000)
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
