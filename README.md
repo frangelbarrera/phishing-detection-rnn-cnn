@@ -16,6 +16,29 @@ set is shipped alongside the model so inference reproduces the training
 preprocessing exactly. Features are recomputed from the URL string at
 both train and inference time, eliminating train/serve skew.
 
+## Branches
+
+This repository contains two branches:
+
+- **`main`** (this branch) — A post-thesis engineering evolution that
+  replaces the original CNN+LSTM architecture with a simpler two-hidden-layer
+  MLP trained on the same URL features. Includes a Flask web UI, CLI,
+  reproducible training script, and committed model artifacts. Test
+  accuracy 89.94%, AUC-ROC 0.965.
+
+- **`thesis-original`** — The defended academic thesis (July 2025) using
+  the original CNN+LSTM hybrid architecture (Conv1D + LSTM, 138,898 params).
+  Preserved exactly as defended, with reproducibility fixes applied
+  post-hoc (corrected input shape, softmax output head, feature
+  standardization, early stopping, AUC on probabilities). Test accuracy
+  88.67%, AUC-ROC 0.946.
+
+To switch between branches:
+```bash
+git checkout main              # post-thesis MLP evolution (this branch)
+git checkout thesis-original   # defended CNN+LSTM thesis
+```
+
 ## Model Results
 
 | Metric | Value |
