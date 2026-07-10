@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import pickle
 from dataclasses import dataclass
@@ -18,6 +19,33 @@ MODEL_PATH = _REPO / "my_model.keras"
 SCALER_PATH = _REPO / "scaler.pkl"
 METRICS_PATH = _REPO / "metrics.json"
 FEATURE_NAMES_PATH = _REPO / "feature_names.json"
+SHA256SUMS_PATH = _REPO / "SHA256SUMS"
+
+
+def _load_expected_sha256(name: str, sums_path: Path = SHA256SUMS_PATH) -> str | None:
+    """Return the expected SHA256 for ``name`` from a SHA256SUMS file."""
+    if not sums_path.exists():
+        return None
+    for line in sums_path.read_text().splitlines():
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            continue
+        digest, fname = parts
+        if fname.strip() == name:
+            return digest.strip()
+    return None
+
+
+def _verify_sha256(path: Path, expected: str | None) -> None:
+    """Raise RuntimeError if ``path`` does not match ``expected`` SHA256."""
+    if expected is None:
+        return
+    actual = hashlib.sha256(path.read_bytes()).hexdigest()
+    if actual != expected:
+        raise RuntimeError(
+            f"integrity check failed for {path.name}: "
+            f"expected {expected}, got {actual}"
+        )
 
 
 @dataclass
@@ -45,7 +73,11 @@ class PhishingDetector:
         model_path: Path = MODEL_PATH,
         scaler_path: Path = SCALER_PATH,
         metrics_path: Path = METRICS_PATH,
+        verify_artifacts: bool = True,
     ) -> None:
+        if verify_artifacts:
+            _verify_sha256(scaler_path, _load_expected_sha256(scaler_path.name))
+            _verify_sha256(model_path, _load_expected_sha256(model_path.name))
         self.model = keras.models.load_model(model_path, compile=False)
         with open(scaler_path, "rb") as f:
             self.scaler = pickle.load(f)
