@@ -1,6 +1,7 @@
 # Offline Phishing Detection Model for Websites
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/main/URL_Phishing_Detection.ipynb)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://phishing-detection-rnn-cnn.onrender.com/)
 
 ## Description
 
