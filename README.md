@@ -1,7 +1,14 @@
 # Offline Phishing Detection Model for Websites
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/main/URL_Phishing_Detection.ipynb)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://phishing-detection-rnn-cnn.onrender.com/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/frangelbarrera/phishing-detection-rnn-cnn/blob/main/URL_Phishing_Detection.ipynb)
+[![License: MIT](https://img.shields.io/github/license/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn/commits)
+[![Issues](https://img.shields.io/github/issues/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn/issues)
+[![Top Language](https://img.shields.io/github/languages/top/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn)
+[![Contributors](https://img.shields.io/github/contributors/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn/graphs/contributors)
+[![Repo Size](https://img.shields.io/github/repo-size/frangelbarrera/phishing-detection-rnn-cnn?style=flat-square)](https://github.com/frangelbarrera/phishing-detection-rnn-cnn)
 
 ## Description
 
