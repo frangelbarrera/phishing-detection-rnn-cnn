@@ -194,3 +194,11 @@ Install with `pip install -r requirements.txt`.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Quality and safe use
+
+The project is evaluated with local tests and the repository’s recorded training metadata and metrics artifacts. Metrics should be interpreted together with their dataset, partition, and evaluation date; values are not presented here unless they are reproduced from those artifacts.
+
+The classifier is intended for offline, authorized defensive analysis. Its output is advisory and does not replace human investigation.
+
+See [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](SECURITY.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
